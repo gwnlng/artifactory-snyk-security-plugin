@@ -18,13 +18,12 @@ import org.artifactory.fs.ItemInfo;
 import org.artifactory.repo.RepoPath;
 import org.artifactory.repo.Repositories;
 import org.artifactory.security.User;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.File;
-import java.net.http.HttpRequest;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.Properties;
@@ -207,17 +206,20 @@ public class SnykPlugin {
     return snykRestClient;
   }
 
-  void handleResponse(SnykResult<NotificationSettings> res) {
+  void handleResponse(SnykResult<NotificationSettings> res) throws IOException {
     if (res.isSuccessful()) {
       LOG.info("Snyk token check successful - response status code {}", res.statusCode);
     } else {
       String info = "";
       if (null != res.response) {
-        HttpRequest request = res.response.request();
-        info += "\nRequest URI: " + request.uri();
-        info += "\nRequest Headers: " + sanitizeHeaders(request);
-        info += "\nResponse Status: " + res.response.statusCode();
-        info += "\nResponse Body: " + res.response.body();
+//        HttpRequest request = res.response.request();
+//        info += "\nRequest URI: " + request.uri();
+//        info += "\nRequest Headers: " + sanitizeHeaders(request);
+//        info += "\nResponse Status: " + res.response.statusCode();
+//        info += "\nResponse Body: " + res.response.body();
+        // print out response headers; there is no token to be sanitized
+        info += "\nResponse headers: " + res.response.getHeaders().toString();
+        info += "\nResponse content: " + res.response.parseAsString();
       }
       LOG.warn("Snyk token check unsuccessful - response status code {}{}", res.statusCode, info);
       if (res.statusCode == 401) {
@@ -228,16 +230,16 @@ public class SnykPlugin {
     }
   }
 
-  @NotNull
-  static String sanitizeHeaders(HttpRequest request) {
-    Optional<String> authorization = request.headers().firstValue("Authorization");
-    if (authorization.isPresent()) {
-      String header = authorization.get();
-      if (header.contains("token") && header.length() > 10) {
-        String maskedAuthHeader = header.substring(0, 10) + "...";
-        return request.headers().toString().replace(header, maskedAuthHeader);
-      }
-    }
-    return request.headers().toString();
-  }
+//  @NotNull
+//  static String sanitizeHeaders(HttpRequest request) {
+//    Optional<String> authorization = request.headers().firstValue("Authorization");
+//    if (authorization.isPresent()) {
+//      String header = authorization.get();
+//      if (header.contains("token") && header.length() > 10) {
+//        String maskedAuthHeader = header.substring(0, 10) + "...";
+//        return request.headers().toString().replace(header, maskedAuthHeader);
+//      }
+//    }
+//    return request.headers().toString();
+//  }
 }

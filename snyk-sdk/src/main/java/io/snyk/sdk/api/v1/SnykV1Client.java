@@ -1,5 +1,8 @@
 package io.snyk.sdk.api.v1;
 
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
 import io.snyk.sdk.SnykConfig;
 import io.snyk.sdk.api.SnykClient;
 import io.snyk.sdk.api.SnykHttpRequestBuilder;
@@ -8,8 +11,8 @@ import io.snyk.sdk.model.v1.TestResult;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+//import java.net.http.HttpRequest;
+//import java.net.http.HttpResponse;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -32,7 +35,12 @@ public class SnykV1Client extends SnykClient {
       .withQueryParam("repository", repository)
       .withQueryParam("topLevelOnly", "true")
       .build();
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpBackOffUnsuccessfulResponseHandler backOffHandler = new HttpBackOffUnsuccessfulResponseHandler(backoff);
+    backOffHandler.setBackOffRequired(HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ALWAYS);
+    request.setUnsuccessfulResponseHandler(backOffHandler);
+    request.setNumberOfRetries(10);
+    HttpResponse response = request.execute();
     return SnykResult.createResult(response, TestResult.class);
   }
 
@@ -46,7 +54,12 @@ public class SnykV1Client extends SnykClient {
       .withQueryParam("org", organisation)
       .withQueryParam("topLevelOnly", "true")
       .build();
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpBackOffUnsuccessfulResponseHandler backOffHandler = new HttpBackOffUnsuccessfulResponseHandler(backoff);
+    backOffHandler.setBackOffRequired(HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ALWAYS);
+    request.setUnsuccessfulResponseHandler(backOffHandler);
+    request.setNumberOfRetries(10);
+    HttpResponse response = request.execute();
     return SnykResult.createResult(response, TestResult.class);
   }
 
@@ -60,7 +73,12 @@ public class SnykV1Client extends SnykClient {
       .withQueryParam("org", organisation)
       .withQueryParam("topLevelOnly", "true")
       .build();
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpBackOffUnsuccessfulResponseHandler backOffHandler = new HttpBackOffUnsuccessfulResponseHandler(backoff);
+    backOffHandler.setBackOffRequired(HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ALWAYS);
+    request.setUnsuccessfulResponseHandler(backOffHandler);
+    request.setNumberOfRetries(10);
+    HttpResponse response = request.execute();
     return SnykResult.createResult(response, TestResult.class);
   }
 
@@ -74,7 +92,12 @@ public class SnykV1Client extends SnykClient {
       .withQueryParam("org", organisation)
       .withQueryParam("topLevelOnly", "true")
       .build();
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpBackOffUnsuccessfulResponseHandler backOffHandler = new HttpBackOffUnsuccessfulResponseHandler(backoff);
+    backOffHandler.setBackOffRequired(HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ALWAYS);
+    request.setUnsuccessfulResponseHandler(backOffHandler);
+    request.setNumberOfRetries(10);
+    HttpResponse response = request.execute();
     return SnykResult.createResult(response, TestResult.class);
   }
 }
